@@ -217,7 +217,7 @@ def start(update, context):
     refferal = update.message.text.replace("/start", "").strip()
     if refferal != "" and refferal != user.id and "ref" not in USERINFO[user.id]:
         USERINFO[user.id]["ref"] = refferal
-        print("Using refferal")
+        print("Using refferal ok")
     else:
         USERINFO[user.id]["ref"] = False
 
@@ -270,6 +270,7 @@ def submit_details(update, context):
 
 
 def follow_telegram(update, context):
+    print('follow_telegram')
     update.message.reply_text(text=MAKE_SURE_TELEGRAM)
     update.message.reply_text(text="Please click on \"Done\" to proceed", parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=ReplyKeyboardMarkup(
         [["Done"], ["Cancel"]]
@@ -278,22 +279,28 @@ def follow_telegram(update, context):
     return FOLLOW_TWITTER
 
 def check_joined_channel(user):
+    print('check joined 4')
     try:
         for link in TELEGRAM_LINKS.split("\n"):
+            if not link: continue
             link ="@"+link.split("/")[-1]
             reply = telegram.bot.Bot(BOT_TOKEN).get_chat_member(link,user)
+            print(reply)
             if reply.status in ('left','kicked'):
                 return False
-    except:
+    except Exception as e:
+        print(e)
         return False
     return True
 
 def follow_twitter(update, context):
+    print('follow_twitter')
     if not check_joined_channel(user = update.message.from_user.id):
             update.message.reply_text(text=f'You have not joined\n {TELEGRAM_LINKS}\nPlease join first and click on "Done" to proceed', reply_markup=ReplyKeyboardMarkup(
                 [["Done"], ["Cancel"],["/restart"]]
             ))
             return FOLLOW_TWITTER
+    print('sau khi check')
     update.message.reply_text(text=FOLLOW_TWITTER_TEXT, parse_mode=telegram.ParseMode.MARKDOWN)
     update.message.reply_text(text="Type in the link to *your Twitter profile* to proceed.\n\nExample: \nhttps://twitter.com/example", parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=ReplyKeyboardMarkup(
         [["Cancel"]]

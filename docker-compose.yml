@@ -1,0 +1,11 @@
+version: "3"
+services:
+  bot_service:
+    build: .
+    env_file:
+      - ./.env
+    volumes:
+      - convbot:/app/conversationbot
+  
+volumes:
+  convbot:
